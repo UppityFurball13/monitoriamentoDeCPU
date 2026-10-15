@@ -20,12 +20,6 @@ O objetivo é aplicar na prática conceitos de Arquitetura de Computadores, como
 | Uso (%)             | Percentual de utilização do núcleo, com barra de progresso |
 | Processos           | Quantidade total de processos em execução no sistema       |
 
-### Limitações conhecidas
-
-- O Windows não informa quantos processos estão rodando em cada núcleo, pois um processo pode migrar entre núcleos a qualquer instante. Por isso o programa mostra o total de processos do sistema.
-- Em alguns processadores, a velocidade "atual" pode ser reportada de acordo com o plano de energia do Windows.
-- "Núcleo" refere-se a núcleo lógico (com Hyper-Threading, um núcleo físico aparece como dois).
-
 ---
 
 ## Tecnologias
@@ -38,7 +32,7 @@ O objetivo é aplicar na prática conceitos de Arquitetura de Computadores, como
 
 ## Como compilar e executar
 
-1. Abra o arquivo `monitor_cpu.c` no **Dev-C++**.
+1. Abra o arquivo `monitorCPU.cpp` no **Dev-C++**.
 2. Vá em **Ferramentas > Opções do Compilador**.
 3. Marque **"Adicionar os seguintes comandos ao chamar o linker"** e escreva:
    ```
