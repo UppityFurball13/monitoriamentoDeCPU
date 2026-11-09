@@ -1,74 +1,72 @@
 # Monitorador de Processador
 
-Programa em C para Windows que monitora, em tempo real, um único núcleo (clock) do processador, de forma semelhante à aba de desempenho do Gerenciador de Tarefas.
+Aplicação gráfica em **C++ para Windows** que acompanha o uso total da CPU e de cada processador lógico. O painel é atualizado a cada segundo e mantém o histórico dos últimos **60 segundos** para visualização e exportação em CSV.
 
-> **Projeto acadêmico em grupo**, desenvolvido na disciplina de **Arquitetura de Computadores** (UFMA, 2026.2) e **avaliado para fins de obtenção de nota**.
+> Projeto acadêmico em grupo da disciplina de **Arquitetura de Computadores** da Universidade Federal do Maranhão (UFMA), no período 2026.2.
 
----
+## O que o painel mostra
 
-## Sobre o projeto
-
-O objetivo é aplicar na prática conceitos de Arquitetura de Computadores, como frequência de clock, núcleos de processamento, uso de CPU e escalonamento de processos. Para isso, o grupo desenvolveu um monitor que acompanha o comportamento de um núcleo escolhido pelo usuário.
-
-### O que o programa exibe
-
-| Informação          | Descrição                                                  |
-| ------------------- | ---------------------------------------------------------- |
-| Nome do processador | Modelo da CPU, lido do registro do Windows                 |
-| Velocidade atual    | Frequência de operação do núcleo (MHz e GHz)               |
-| Velocidade máxima   | Frequência máxima suportada pelo núcleo                    |
-| Uso (%)             | Percentual de utilização do núcleo, com barra de progresso |
-| Processos           | Quantidade total de processos em execução no sistema       |
-
----
-
-## Tecnologias
-
-- Linguagem **C**
-- **Dev-C++** (compilador MinGW)
-- API do Windows: `CallNtPowerInformation`, PDH (Performance Data Helper), Toolhelp32 e Registro do Windows
-
----
+| Informação                              | Como aparece                                                                                  |
+| --------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Modelo do processador                   | Nome da CPU consultado no Registro do Windows.                                                |
+| Núcleos físicos e processadores lógicos | Quantidades exibidas separadamente no topo da janela.                                         |
+| Uso total da CPU                        | Percentual atual e gráfico dos últimos 60 segundos.                                           |
+| Uso por processador lógico              | Percentual na grade e histórico no gráfico ao selecionar uma CPU.                             |
+| Frequência                              | Valor em MHz informado pelo Windows para o processador lógico selecionado, quando disponível. |
+| Processos                               | Total de processos em execução no sistema.                                                    |
 
 ## Como compilar e executar
 
-1. Abra o arquivo `monitorCPU.cpp` no **Dev-C++**.
-2. Vá em **Ferramentas > Opções do Compilador**.
-3. Marque **"Adicionar os seguintes comandos ao chamar o linker"** e escreva:
-   ```
-   -lpowrprof -lpdh
-   ```
-4. Compile e execute com **F11**.
-5. Informe o número do núcleo que deseja monitorar. Para sair, pressione `q`.
+Você precisa do **Windows** e do **MinGW-w64 de 64 bits**. O código usa **C++98** e pode ser compilado no **Dev-C++ com TDM-GCC 4.9.2 64-bit Release**.
 
----
+### No Dev-C++
+
+1. Abra [`monitorCPU.cpp`](./monitorCPU.cpp) diretamente no Dev-C++.
+2. Em **Ferramentas → Opções do Compilador → Geral**, selecione o perfil **TDM-GCC 4.9.2 64-bit Release**.
+3. Marque a opção para adicionar comandos ao **linker** e inclua:
+
+   ```text
+   -mwindows -lpdh -lpsapi -lcomdlg32 -lgdi32 -ladvapi32 -luser32
+   ```
+
+4. Pressione **F11** para compilar e executar.
+
+### Pelo PowerShell
+
+Com o `g++` do MinGW-w64 disponível no `PATH`, abra o PowerShell na pasta do código e execute:
+
+```powershell
+g++ -std=c++98 -mwindows monitorCPU.cpp -o monitorCPU.exe -lpdh -lpsapi -lcomdlg32 -lgdi32 -ladvapi32 -luser32
+.\monitorCPU.exe
+```
+
+Se aparecer `undefined reference` para funções do Windows, confira se as bibliotecas foram adicionadas ao **linker**. No terminal, deixe as opções `-l...` depois de `monitorCPU.cpp`.
+
+## Como usar
+
+1. Ao abrir o programa, acompanhe o gráfico de **uso total da CPU**.
+2. Clique em uma CPU na grade ou escolha um processador lógico no seletor para ver seu histórico. Para voltar, selecione **Uso total da CPU**.
+3. Clique em **Exportar CSV** e escolha onde salvar o histórico disponível naquele momento. Cada linha contém o horário, o uso total, a quantidade de processos e os valores de uso e frequência por processador lógico. O arquivo usa ponto e vírgula como separador de colunas.
+
+O percentual de uso começa a aparecer após a segunda amostra. **N/D** indica que uma leitura está indisponível.
+
+## Como o código funciona
+
+A interface usa a **API Win32** e as medições de desempenho são consultadas pelo **PDH** (_Performance Data Helper_). A função `iniciarContadores()` prepara as consultas, `coletar()` registra as amostras e `atualizarPainel()` atualiza os valores e solicita o redesenho da tela. A função `exportarCsv()` grava o histórico quando o usuário aciona o botão.
 
 ## Acompanhamento do projeto
 
-### Arquivos enviados ao professor
-
-Todas as versões e atualizações do projeto enviadas ao professor durante o desenvolvimento estão na pasta:
-
-📁 **[`Arquivos/`](./Arquivos)**
-
-### Cronograma (Diagrama de Gantt)
-
-O planejamento e o andamento das etapas do projeto estão no Notion:
-
-🔗 **[Acessar o diagrama de Gantt no Notion](https://app.notion.com/p/Diagrama-de-Gantt-ea9bf99354c7832d81be012f81b9c7cf)**
-
----
+- [Arquivos enviados ao professor](./Arquivos)
+- [Cronograma do projeto no Notion](https://app.notion.com/p/Diagrama-de-Gantt-ea9bf99354c7832d81be012f81b9c7cf)
 
 ## Equipe
-
-Projeto desenvolvido em grupo pelos seguintes integrantes:
 
 - João Yuri Anderson da Silva Frazão
 - Silas de Sousa Silva
 - Vinícius Guilhon Cunha
 - Vitor dos Santos de Sousa
 
-**Disciplina:** Arquitetura de Computadores
-**Professor(a):** Luís Henrique Neves Rodrigues
-**Instituição:** Universidade Federal do Maranhão (UFMA)
-**Período:** 2026.2
+**Disciplina** — Arquitetura de Computadores  
+**Professor** — Luís Henrique Neves Rodrigues  
+**Instituição** — Universidade Federal do Maranhão (UFMA)  
+**Período** — 2026.2
